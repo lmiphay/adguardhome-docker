@@ -1,0 +1,16 @@
+[Unit]
+Description=Adguardhome Service
+After=network-online.target
+Description=Adguardhome Docker Appliance Service
+Documentation=man:adguardhome-docker(8)
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+Environment=HA_DOCKER_CONFIG=/etc/adguardhome.conf
+WorkingDirectory=/var/tmp
+ExecStart=/usr/bin/adguardhome-docker start
+ExecStop=/usr/bin/adguardhome-docker stop
+
+[Install]
+WantedBy=multi-user.target

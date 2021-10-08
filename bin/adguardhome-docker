@@ -1,0 +1,64 @@
+#!/bin/bash
+
+ah_version=${ah_version:-"v0.106.3"}
+ah_image=${ah_image:-"adguard/adguardhome"}
+ah_hostname=${ah_hostname:-"adguardhome"}
+ah_config=${ah_config:-/adguardhome/config}
+ah_work=${ah_work:-/adguardhome/work}
+
+# Australia/Melbourne...etc, see: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+ah_tz=${ah_tz:-Europe/Dublin}
+
+ah_ports=${ah_ports:-""}
+ah_ports="${ah_ports} -p 53:53/tcp -p 53:53/udp" # plain DNS
+#ah_ports="${ah_ports} -p 67:67/udp -p 68:68/udp" # DHCP server
+ah_ports="${ah_ports} -p 80:80/tcp -p 443:443/tcp -p 443:443/udp -p 3000:3000/tcp" # admin panel and HTTPS/DNS-over-HTTPS
+#ah_ports="${ah_ports} -p 853:853/tcp" #  DNS-over-TLS
+#ah_ports="${ah_ports} -p 784:784/udp -p 853:853/udp -p 8853:8853/udp" # DNS-over-QUIC
+#ah_ports="${ah_ports} -p 5443:5443/tcp -p 5443:5443/udp" # DNSCrypt server
+
+AH_DOCKER_CONFIG=${AH_DOCKER_CONFIG:-/etc/adguardhome.conf}
+
+if [ -n "${AH_DOCKER_CONFIG}" -a -f "${AH_DOCKER_CONFIG}" ] ; then source "${AH_DOCKER_CONFIG}" ; fi
+
+case "$1" in
+    pull)
+	docker pull "${ah_image}:${ah_version}"
+	;;
+    create)
+	docker create \
+	       --name adguardhome \
+	       --hostname "${ah_hostname}" \
+	       --restart=unless-stopped \
+	       -v "${ah_work}":"/opt/adguardhome/work":rw \
+	       -v "${ah_config}":"/opt/adguardhome/conf":rw \
+	       -e "TZ=${ah_tz}" \
+	       -v "/etc/localtime":"/etc/localtime":ro \
+	       -v "/etc/timezone":"/etc/timezone":ro \
+	       ${ah_ports} \
+	       "${ah_image}:${ah_version}"
+	;;
+    start|run)
+	[ ! -d "${ah_config}" ] && mkdir -p "${ah_config}"
+	[ ! -d "${ah_work}" ] && mkdir -p "${ah_work}"
+	docker start adguardhome
+	if [ $? -eq 0 ] ; then echo "listening on http://localhost:3000"; fi
+	;;
+    stop)
+	docker stop adguardhome
+	;;
+    delete|rm)
+	docker rm adguardhome
+	;;
+    logs)
+	docker logs -f adguardhome
+	;;
+    settings)
+	set | egrep '^ah_' | sort
+	;;
+    *)
+	echo "Usage: $(basename $0) {pull|create|start|stop|delete|logs|settings}"
+	;;
+esac
+
+exit 0
