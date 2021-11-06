@@ -21,6 +21,20 @@ AH_DOCKER_CONFIG=${AH_DOCKER_CONFIG:-/etc/adguardhome.conf}
 
 if [ -n "${AH_DOCKER_CONFIG}" -a -f "${AH_DOCKER_CONFIG}" ] ; then source "${AH_DOCKER_CONFIG}" ; fi
 
+waitfordockerd()
+{
+    for (( count=1; count<=15; count++ )) ; do
+	if docker version >/dev/null 2>&1 ; then
+	    return
+	else
+	    echo "waiting for docker daemon to start"
+	    sleep 1
+	fi
+    done
+    echo "timed out waiting for docker daemon to start"
+    exit 1
+}
+
 case "$1" in
     pull)
 	docker pull "${ah_image}:${ah_version}"
@@ -41,6 +55,7 @@ case "$1" in
     start|run)
 	[ ! -d "${ah_config}" ] && mkdir -p "${ah_config}"
 	[ ! -d "${ah_work}" ] && mkdir -p "${ah_work}"
+	waitfordockerd
 	docker start adguardhome
 	if [ $? -eq 0 ] ; then echo "listening on http://localhost:3000"; fi
 	;;
