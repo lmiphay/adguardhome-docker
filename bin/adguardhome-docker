@@ -12,7 +12,11 @@ ah_tz=${ah_tz:-Europe/Dublin}
 ah_ports=${ah_ports:-""}
 ah_ports="${ah_ports} -p 53:53/tcp -p 53:53/udp" # plain DNS
 #ah_ports="${ah_ports} -p 67:67/udp -p 68:68/udp" # DHCP server
+
+# forwarding port 80 for the dashboard puts a listener on port 80 (which may clash with
+# other requirements; e.g. certbot)
 ah_ports="${ah_ports} -p 80:80/tcp -p 443:443/tcp -p 443:443/udp -p 3000:3000/tcp" # admin panel and HTTPS/DNS-over-HTTPS
+
 #ah_ports="${ah_ports} -p 853:853/tcp" #  DNS-over-TLS
 #ah_ports="${ah_ports} -p 784:784/udp -p 853:853/udp -p 8853:8853/udp" # DNS-over-QUIC
 #ah_ports="${ah_ports} -p 5443:5443/tcp -p 5443:5443/udp" # DNSCrypt server
