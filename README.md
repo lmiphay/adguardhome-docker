@@ -62,3 +62,5 @@ rc-config add adguardhome
 1. https://wiki.gentoo.org/wiki/Docker
 2. https://hub.docker.com/r/adguard/adguardhome
 3. https://github.com/AdguardTeam/AdGuardHome/wiki/Docker
+4. https://github.com/AdguardTeam/AdGuardHome
+5. https://www.ibm.com/docs/en/tpmfod/7.1.1.14?topic=configuration-dhcpdconf-example
