@@ -69,8 +69,8 @@ case "$1" in
     delete|rm)
 	docker rm adguardhome
 	;;
-    logs)
-	docker logs -f adguardhome
+    log*)
+	docker logs -n 1000 -f adguardhome 2>&1
 	;;
     settings)
 	set | egrep '^ah_' | sort
