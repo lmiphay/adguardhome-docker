@@ -49,12 +49,43 @@ $ adguardhome-docker logs
 ...
 ```
 
+## Upgrade
+
+After installing or updating `adguardhome-docker`:
+
+1. adguardhome-docker stop
+2. adguardhome-docker pull
+3. docker rename adguardhome adguardhome-0.106.3 # renames the old container
+4. adguardhome-docker create
+5. adguardhome-docker start
+
+Optional - to remove an old container and/or image:
+
+6. docker rm adguardhome-0.106.3
+7. docker rmi adguard/adguardhome:v0.106.3
+
 ## OpenRC
 
 To have the container start automatically:
 
 ```
 rc-config add adguardhome
+```
+
+## Logging
+
+The default docker "json-file" logging driver does *not* do log rotation.
+
+To select the "local" driver, with a max file size of 10MB and four files, add this to `/etc/docker/daemon.json`:
+
+```json
+{
+  "log-driver": "local",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "4"
+  }
+}
 ```
 
 ## References
