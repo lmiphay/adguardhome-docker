@@ -11,7 +11,7 @@ Variables in `/etc/adguardhome.conf` (on the host server) allow these settings t
 3. timezone setting
 4. ports - different DNS and DHCP options - see https://hub.docker.com/r/adguard/adguardhome
 
-The AdGuard Home service is found on: http://127.0.0.1:3000/
+The AdGuard Home UI service is found on: http://127.0.0.1:3000/
 
 ## Quickstart
 
@@ -68,8 +68,17 @@ Optional - to remove an old container and/or image:
 
 To have the container start automatically:
 
-```
+```sh
 rc-config add adguardhome
+```
+
+## systemd
+
+To start adguardhome automatically:
+
+```sh
+systemctl enable adguardhome
+systemctl status adguardhome
 ```
 
 ## Logging
@@ -88,6 +97,10 @@ To select the "local" driver, with a max file size of 10MB and four files, add t
 }
 ```
 
+## Using the DNS Server
+
+Point the DNS service at <IP-Address>:
+
 ## References
 
 1. https://wiki.gentoo.org/wiki/Docker
@@ -95,3 +108,4 @@ To select the "local" driver, with a max file size of 10MB and four files, add t
 3. https://github.com/AdguardTeam/AdGuardHome/wiki/Docker
 4. https://github.com/AdguardTeam/AdGuardHome
 5. https://www.ibm.com/docs/en/tpmfod/7.1.1.14?topic=configuration-dhcpdconf-example
+6. AdGuard DNS Providers https://adguard-dns.io/kb/general/dns-providers/
