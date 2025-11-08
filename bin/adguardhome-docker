@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ah_version=${ah_version:-"v0.107.52"}
+ah_version=${ah_version:-"v0.107.69"}
 ah_image=${ah_image:-"adguard/adguardhome"}
 ah_hostname=${ah_hostname:-"adguardhome"}
 ah_config=${ah_config:-/adguardhome/config}
